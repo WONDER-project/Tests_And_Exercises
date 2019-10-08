@@ -7,11 +7,11 @@ def Ac(D, L, coefficients):
     D_limit_dist = D*coefficients.limit_dist/100
     D_limit_dist_xj = D_limit_dist*coefficients.xj
 
-    def __value_1(coefficients, L):
-        return coefficients.a0 + coefficients.b0*L + coefficients.c0*(L**2) + coefficients.d0*(L**3)
+    def __value_1(coefficients, LoverD):
+        return coefficients.a0 + coefficients.b0*LoverD + coefficients.c0*(LoverD**2) + coefficients.d0*(LoverD**3)
 
-    def __value_2(coefficients, L):
-        return coefficients.a1 + coefficients.b1*L + coefficients.c1*(L**2) + coefficients.d1*(L**3)
+    def __value_2(coefficients, LoverD):
+        return coefficients.a1 + coefficients.b1*LoverD + coefficients.c1*(LoverD**2) + coefficients.d1*(LoverD**3)
 
     if type(L) == numpy.ndarray:
         result = numpy.zeros(L.size)
@@ -19,16 +19,16 @@ def Ac(D, L, coefficients):
         cursor_1 = numpy.where(numpy.logical_and(L >= 0.0,            L <= D_limit_dist_xj)) # TODO: check L=0
         cursor_2 = numpy.where(numpy.logical_and(L > D_limit_dist_xj, L <= D_limit_dist))
 
-        result[cursor_1] = __value_1(coefficients, L[cursor_1])
-        result[cursor_2] = __value_2(coefficients, L[cursor_2])
+        result[cursor_1] = __value_1(coefficients, L[cursor_1]/D)
+        result[cursor_2] = __value_2(coefficients, L[cursor_2]/D)
 
         result[numpy.where(result < 0.0)] = 0.0
         return result
     else:
         if 0.0 <= L <= D_limit_dist_xj:
-            return max(0.0, __value_1(coefficients, L))
+            return max(0.0, __value_1(coefficients, L/D))
         elif D_limit_dist_xj < L <= D_limit_dist:
-            return max(0.0, __value_2(coefficients, L))
+            return max(0.0, __value_2(coefficients, L/D))
         else:
             return 0.0
 
@@ -63,9 +63,9 @@ if __name__=="__main__":
     h = 1
     k = 0
     l = 0
-    L = numpy.arange(0.0, 1.0, 0.1)
+    L = numpy.arange(0.0, 1.0, 0.01)
 
-    truncation = 1.0
+    truncation = 0.5678
     mu         = 2.0
     sigma      = 0.1
 
@@ -77,7 +77,7 @@ if __name__=="__main__":
 
     from matplotlib import pyplot as plt
 
-    plt.plot(L, size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L))
+    plt.plot(L, size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L, face=WulffCubeFace.TRIANGULAR), linewidth=5)
     plt.plot(L, size_function_wulff_solids_lognormal(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR))
     plt.show()
 
