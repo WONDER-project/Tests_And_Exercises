@@ -1,17 +1,17 @@
 import numpy
 from scipy import integrate
 
-from orangecontrib.wonder.controller.fit.wppm.wppm_functions import WulffCubeFace,  lognormal_distribution, size_function_wulff_solids_lognormal, get_wulff_solid_Hj_coefficients
+from orangecontrib.wonder.controller.fit.wppm.wppm_functions import WulffCubeFace, lognormal_distribution, size_function_wulff_solids_lognormal, get_wulff_solid_Hj_coefficients
 
 def Ac(D, L, coefficients):
     D_limit_dist = D*coefficients.limit_dist/100
     D_limit_dist_xj = D_limit_dist*coefficients.xj
 
-    def __value_1(coefficients, LoverD):
-        return coefficients.a0 + coefficients.b0*LoverD + coefficients.c0*(LoverD**2) + coefficients.d0*(LoverD**3)
+    def __value_1(coefficients, x):
+        return coefficients.a0 + coefficients.b0 * x + coefficients.c0 * (x ** 2) + coefficients.d0 * (x ** 3)
 
-    def __value_2(coefficients, LoverD):
-        return coefficients.a1 + coefficients.b1*LoverD + coefficients.c1*(LoverD**2) + coefficients.d1*(LoverD**3)
+    def __value_2(coefficients, x):
+        return coefficients.a1 + coefficients.b1 * x + coefficients.c1 * (x ** 2) + coefficients.d1 * (x ** 3)
 
     if type(L) == numpy.ndarray:
         result = numpy.zeros(L.size)
@@ -60,12 +60,12 @@ def size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, si
         return __numerator(coefficients, mu, sigma, L)/__denominator(mu, sigma)
 
 if __name__=="__main__":
-    h = 1
-    k = 0
+    h = 2
+    k = 1
     l = 0
     L = numpy.arange(0.0, 1.0, 0.01)
 
-    truncation = 0.5678
+    truncation = 0.0
     mu         = 2.0
     sigma      = 0.1
 
