@@ -1,4 +1,4 @@
-
+#changes
 import numpy
 from scipy.special import erfc
 
@@ -36,6 +36,8 @@ def size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, 
     M_l3     = M_ln(mu, sigma2, 3)
 
     coefficients = get_wulff_solid_Hj_coefficients(h, k, l, truncation, face)
+    print(coefficients)
+
 
     Kc = 100.0 / coefficients.limit_dist
 
@@ -55,12 +57,13 @@ def size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, 
     return fourier_amplitude
 
 if __name__=="__main__":
+    integration_method = 'trapz'
     h = 1
     k = 1
-    l = 0
+    l = 1
     L = numpy.arange(0.0, 1.0, 0.01)
 
-    truncation = 1.0
+    truncation = 0.3
     mu         = 2.0
     sigma      = 0.1
 
@@ -72,7 +75,8 @@ if __name__=="__main__":
 
     from matplotlib import pyplot as plt
 
-    plt.plot(L, size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L, face=WulffCubeFace.TRIANGULAR), linewidth=10)
-    plt.plot(L, size_function_wulff_solids_lognormal(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR), linewidth=5)
-    plt.plot(L, size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR))
+    plt.plot(L, size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L, integration_method, face=WulffCubeFace.TRIANGULAR), linewidth=10, label = 'brute force')
+    plt.plot(L, size_function_wulff_solids_lognormal(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR), linewidth=5, label = 'analytical')
+    plt.plot(L, size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR), label = 'new analytical')
+    plt.legend()
     plt.show()
