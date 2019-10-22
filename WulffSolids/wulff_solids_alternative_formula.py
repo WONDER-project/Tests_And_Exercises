@@ -36,10 +36,8 @@ def size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, 
     M_l3     = M_ln(mu, sigma2, 3)
 
     coefficients = get_wulff_solid_Hj_coefficients(h, k, l, truncation, face)
-    #print(coefficients)
 
     Kc = 100.0 / coefficients.limit_dist
-    #Kc = 1
 
     poly_coefficients = numpy.array([coefficients.aa, coefficients.bb, coefficients.cc, coefficients.dd])
     fourier_amplitude = __FFourierLognormal(poly_coefficients, L * Kc, 1.0, mu, sigma2, ssqrt2, M_l3, is_array)
@@ -58,14 +56,14 @@ def size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, 
 
 if __name__=="__main__":
     #integration_method = 'quad'
-    h = 2
-    k = 1
+    h = 1
+    k = 0
     l = 0
     L = numpy.arange(0.0, 1.0, 0.01)
 
-    truncation = 0.1
-    mu         = 2.0
-    sigma      = 0.1
+    truncation = 0.1525
+    mu         = 3.0
+    sigma      = 0.05
 
     D_avg = numpy.exp(mu + 0.5*sigma**2)
 
@@ -77,8 +75,8 @@ if __name__=="__main__":
     from matplotlib import pyplot as plt
 
     plt.plot(L, size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L, integration_method='trapz', face=WulffCubeFace.TRIANGULAR), linewidth=10, label = 'trapz')
-    plt.plot(L, size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L, integration_method='quad', face=WulffCubeFace.TRIANGULAR), linewidth=5, label = 'quad')
-    #plt.plot(L, size_function_wulff_solids_lognormal(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR), linewidth=5, label = 'analytical')
-    #plt.plot(L, size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR), label = 'new analytical')
+    plt.plot(L, size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L, integration_method='quad', face=WulffCubeFace.TRIANGULAR), linewidth=8, label = 'quad')
+    plt.plot(L, size_function_wulff_solids_lognormal(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR), linewidth=4, label = 'analytical')
+    plt.plot(L, size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, WulffCubeFace.TRIANGULAR), linewidth=2, label = 'new analytical')
     plt.legend()
     plt.show()

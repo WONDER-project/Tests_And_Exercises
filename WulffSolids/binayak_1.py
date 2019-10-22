@@ -40,9 +40,8 @@ def g(mu, sigma, D):
 def Vc(D, truncation):
     return ((D**3)*(1 - (3/2)*truncation**2 + (2/3)*truncation**3))
 
-def size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L, integration_method, face=WulffCubeFace.TRIANGULAR):
+def size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, sigma, L, integration_method="quad", face=WulffCubeFace.TRIANGULAR):
     coefficients = get_wulff_solid_Hj_coefficients(h, k, l, truncation, face)
-    #print(coefficients)
 
     Kc = 100/coefficients.limit_dist
 
@@ -50,37 +49,31 @@ def size_function_wulff_solids_lognormal_brute_force(h, k, l, truncation, mu, si
         if integration_method == 'quad':
             return integrate.quad(lambda D:  Ac(D, L, coefficients)*g(mu, sigma, D)*Vc(D, truncation), Kc*L, numpy.inf)[0]
         elif integration_method == 'trapz':
-            D_0 = numpy.arange(0.1,100,0.1)
-            D = D_0**(3)
-            Ac_value = numpy.zeros(D.shape)
-            for i in range(len(D)):
-                Ac_value[i] = Ac(D[i], L, coefficients)
-            g_value = numpy.zeros(D.shape)
-            for i in range(len(D)):
-                g_value[i] = g(mu, sigma,D[i])
-            Vc_value = numpy.zeros(D.shape)
-            for i in range(len(D)):
-                Vc_value[i] = Vc(D[i], truncation)
-            return integrate.trapz(Ac_value*g_value*Vc_value,D)
+            D = numpy.linspace(Kc*L, 100, 1000)
+            integrand = numpy.zeros(D.shape)
 
+            for i in range(D.size):
+                D_i = D[i]
+                integrand[i] = Ac(D_i, L, coefficients)* g(mu, sigma, D_i)*Vc(D_i, truncation)
 
+            return integrate.trapz(integrand, D)
+        else:
+            raise ValueError('Invalid integration method')
 
     def __denominator(mu, sigma,integration_method):
         if integration_method == 'quad':
             return integrate.quad(lambda D:  g(mu, sigma, D)*Vc(D, truncation), 0, numpy.inf)[0]
         elif integration_method == 'trapz':
-            D_0 = numpy.arange(0.1,100,0.1)
-            D = D_0**(3)
-            g_value = numpy.zeros(D.shape)
-            for i in range(len(D)):
-                g_value[i] = g(mu, sigma, D[i])
-            Vc_value = numpy.zeros(D.shape)
-            for i in range(len(D)):
-                Vc_value[i] = Vc(D[i], truncation)
-            return integrate.trapz(g_value*Vc_value,D)
+            D = numpy.linspace(1e-4, 100, 1000)
+            integrand = numpy.zeros(D.shape)
+
+            for i in range(D.size):
+                D_i = D[i]
+                integrand[i] = g(mu, sigma, D_i)*Vc(D_i, truncation)
+
+            return integrate.trapz(integrand, D)
         else:
-            print('Invalid integration method')
-            return 0
+            raise ValueError('Invalid integration method')
 
     if type(L) == numpy.ndarray:
         numerator = numpy.zeros(L.size)
