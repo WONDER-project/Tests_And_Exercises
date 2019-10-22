@@ -5,7 +5,7 @@ from orangecontrib.wonder.controller.fit.wppm.wppm_functions import WulffCubeFac
 
 def Ac(D, L, coefficients):
     #print(D)
-    print(D*coefficients.limit_dist/100)
+    #print(D*coefficients.limit_dist/100)
     D_limit_dist    = D*coefficients.limit_dist/100
     D_limit_dist_xj = D_limit_dist*coefficients.xj
     #print(D_limit_dist_xj)

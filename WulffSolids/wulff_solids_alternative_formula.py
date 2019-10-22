@@ -36,10 +36,10 @@ def size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, 
     M_l3     = M_ln(mu, sigma2, 3)
 
     coefficients = get_wulff_solid_Hj_coefficients(h, k, l, truncation, face)
-    print(coefficients)
+    #print(coefficients)
 
-    #Kc = 100.0 / coefficients.limit_dist
-    Kc = 1
+    Kc = 100.0 / coefficients.limit_dist
+    #Kc = 1
 
     poly_coefficients = numpy.array([coefficients.aa, coefficients.bb, coefficients.cc, coefficients.dd])
     fourier_amplitude = __FFourierLognormal(poly_coefficients, L * Kc, 1.0, mu, sigma2, ssqrt2, M_l3, is_array)
@@ -72,7 +72,7 @@ if __name__=="__main__":
     print("D_avg", D_avg)
 
     L *= numpy.ceil(D_avg)*1.5
-    print(L)
+    #print(L)
 
     from matplotlib import pyplot as plt
 
