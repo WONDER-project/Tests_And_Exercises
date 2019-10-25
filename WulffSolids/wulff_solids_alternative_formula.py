@@ -4,7 +4,7 @@ from scipy.special import erfc
 
 from orangecontrib.wonder.controller.fit.wppm.wppm_functions import WulffCubeFace, size_function_wulff_solids_lognormal, get_wulff_solid_Hj_coefficients
 
-from WulffSolids.binayak_1 import size_function_wulff_solids_lognormal_brute_force
+from WulffSolids.wulff_solids_test import size_function_wulff_solids_lognormal_brute_force
 
 def size_function_wulff_solids_lognormal_new(L, h, k, l, sigma, mu, truncation, face):
 
